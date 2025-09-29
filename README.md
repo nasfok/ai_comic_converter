@@ -5,7 +5,7 @@
 Разработано командой `"Виноделы 22 цеха"`
 
 <div align="center">
-  <img src="logo.png" width=400px>
+  <img src="logo.jpg" width=400px>
 </div>
 
 <br>
