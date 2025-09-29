@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Конвертер в PDF | 👾 Няшный и точка</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Comic+Neue:ital,wght@0,400;0,700;1,400&display=swap');
+
+        :root {
+            --bg: #1a1a1a;
+            --card: #2d2d2d;
+            --accent: #ff6b9d;
+            --accent-hover: #ff8ab0;
+            --text: #e0e0e0;
+            --text-muted: #888;
+            --border: #404040;
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Comic Neue', cursive;
+            background: linear-gradient(135deg, #0c0c0c 0%, #2d2d2d 100%);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 500px;
+            width: 100%;
+            background: var(--card);
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            padding: 40px;
+            text-align: center;
+            border: 2px solid var(--border);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .container::before {
+            content: "✨";
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 24px;
+            animation: sparkle 2s infinite;
+        }
+
+        @keyframes sparkle {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+
+        .logo {
+            font-size: 64px;
+            margin-bottom: 16px;
+            filter: drop-shadow(0 0 10px var(--accent));
+        }
+
+        h1 {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            background: linear-gradient(45deg, var(--accent), #ffd166);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .subtitle {
+            color: var(--text-muted);
+            margin-bottom: 32px;
+            font-size: 16px;
+            line-height: 1.4;
+        }
+
+        .upload-area {
+            border: 3px dashed var(--border);
+            border-radius: 16px;
+            padding: 40px 20px;
+            margin-bottom: 24px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            position: relative;
+            background: rgba(255,255,255,0.02);
+        }
+
+        .upload-area:hover {
+            border-color: var(--accent);
+            background: rgba(255,107,157,0.05);
+            transform: translateY(-2px);
+        }
+
+        .upload-area.active {
+            border-color: var(--accent);
+            background: rgba(255,107,157,0.1);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(255,107,157,0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(255,107,157,0); }
+            100% { box-shadow: 0 0 0 0 rgba(255,107,157,0); }
+        }
+
+        .upload-icon {
+            font-size: 56px;
+            margin-bottom: 16px;
+            filter: grayscale(1) brightness(0.8);
+            transition: all 0.3s ease;
+        }
+
+        .upload-area:hover .upload-icon {
+            filter: grayscale(0) brightness(1);
+            transform: scale(1.1);
+        }
+
+        .file-input {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .file-info {
+            margin-top: 12px;
+            font-size: 14px;
+            color: var(--text-muted);
+            background: rgba(0,0,0,0.3);
+            padding: 8px 12px;
+            border-radius: 8px;
+            display: inline-block;
+        }
+
+        .btn {
+            background: linear-gradient(45deg, var(--accent), #ff8e53);
+            color: white;
+            border: none;
+            padding: 16px 32px;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            width: 100%;
+            margin-bottom: 16px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 8px 25px rgba(255,107,157,0.4);
+        }
+
+        .btn:active {
+            transform: translateY(-1px) scale(1.01);
+        }
+
+        .btn:disabled {
+            background: var(--border);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .btn:disabled::before {
+            display: none;
+        }
+
+        .formats {
+            color: var(--text-muted);
+            font-size: 14px;
+            margin-top: 8px;
+            padding: 12px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 8px;
+        }
+
+        .features {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 32px;
+            padding-top: 24px;
+            border-top: 1px solid var(--border);
+        }
+
+        .feature {
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .feature:hover {
+            transform: translateY(-3px);
+        }
+
+        .feature-icon {
+            font-size: 24px;
+            margin-bottom: 8px;
+            filter: drop-shadow(0 0 5px var(--accent));
+        }
+
+        .feature-text {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .loading {
+            display: none;
+            font-size: 14px;
+            color: var(--accent);
+            margin-top: 10px;
+        }
+
+        .loading::after {
+            content: "";
+            animation: dots 1.5s infinite;
+        }
+
+        @keyframes dots {
+            0%, 20% { content: "."; }
+            40% { content: ".."; }
+            60%, 100% { content: "..."; }
+        }
+
+        .error-message {
+            color: #ff6b6b;
+            background: rgba(255,107,107,0.1);
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 16px;
+            display: none;
+        }
+
+        .success-message {
+            color: #4ade80;
+            background: rgba(74,222,128,0.1);
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 16px;
+            display: none;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 24px;
+            }
+
+            h1 {
+                font-size: 28px;
+            }
+
+            .upload-area {
+                padding: 30px 15px;
+            }
+
+            .logo {
+                font-size: 48px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">👾</div>
+        <h1>Конвертер в PDF</h1>
+        <p class="subtitle">Превращаем твои файлы в крутые PDF-ки<br>Без заморочек, как в старые добрые</p>
+
+        <form id="uploadForm" action="/upload" method="post" enctype="multipart/form-data">
+            <div class="upload-area" id="uploadArea">
+                <input type="file" name="file" accept=".txt,.doc,.docx" required class="file-input" id="fileInput">
+                <div class="upload-icon">📁</div>
+                <p><strong>Кинь файл сюда 👇</strong></p>
+                <p style="font-size: 12px; color: var(--text-muted); margin-top: 8px;">или кликни, если ты из тех, кто до сих пор кликает</p>
+                <p class="file-info" id="fileInfo">Файл не выбран... как так-то? 🤔</p>
+            </div>
+
+            <button type="submit" class="btn" id="convertBtn" disabled>
+                🪄 Превратить в PDF!
+            </button>
+            <div class="loading" id="loading">Конвертируем</div>
+            <div class="error-message" id="errorMessage"></div>
+            <div class="success-message" id="successMessage"></div>
+        </form>
+
+        <p class="formats">Жмём: TXT, DOC, DOCX (да, мы старомодные)</p>
+
+        <div class="features">
+            <div class="feature">
+                <div class="feature-icon">🚀</div>
+                <div class="feature-text">Быстрее чем<br>твой интернет в 2007</div>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">🔒</div>
+                <div class="feature-text">Файлы не уходят<br>в космос</div>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">🎮</div>
+                <div class="feature-text">Работает даже<br>на тостере</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const fileInput = document.getElementById('fileInput');
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInfo = document.getElementById('fileInfo');
+        const convertBtn = document.getElementById('convertBtn');
+        const loading = document.getElementById('loading');
+        const errorMessage = document.getElementById('errorMessage');
+        const successMessage = document.getElementById('successMessage');
+
+        // Сброс сообщений
+        function resetMessages() {
+            errorMessage.style.display = 'none';
+            successMessage.style.display = 'none';
+        }
+
+        fileInput.addEventListener('change', function(e) {
+            resetMessages();
+            if (this.files.length > 0) {
+                const file = this.files[0];
+                const fileSize = (file.size / 1024 / 1024).toFixed(2);
+                fileInfo.textContent = `✅ ${file.name} (${fileSize} MB)`;
+                fileInfo.style.color = '#4ade80';
+                uploadArea.classList.add('active');
+                convertBtn.disabled = false;
+            } else {
+                fileInfo.textContent = 'Файл не выбран... как так-то? 🤔';
+                fileInfo.style.color = 'var(--text-muted)';
+                uploadArea.classList.remove('active');
+                convertBtn.disabled = true;
+            }
+        });
+
+        // Drag and drop functionality
+        uploadArea.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            uploadArea.classList.add('active');
+            fileInfo.textContent = 'Отпускай уже! 😄';
+        });
+
+        uploadArea.addEventListener('dragleave', function() {
+            uploadArea.classList.remove('active');
+            if (!fileInput.files.length) {
+                fileInfo.textContent = 'Файл не выбран... как так-то? 🤔';
+            }
+        });
+
+        uploadArea.addEventListener('drop', function(e) {
+            e.preventDefault();
+            uploadArea.classList.remove('active');
+            fileInput.files = e.dataTransfer.files;
+            fileInput.dispatchEvent(new Event('change'));
+        });
+
+        // Обработка формы
+        document.getElementById('uploadForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const formData = new FormData();
+            formData.append('file', fileInput.files[0]);
+
+            // Показываем загрузку
+            loading.style.display = 'block';
+            convertBtn.disabled = true;
+            convertBtn.textContent = '🪄 Волшебство происходит...';
+            resetMessages();
+
+            try {
+                const response = await fetch('/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (response.ok) {
+                    // Получаем PDF файл
+                    const blob = await response.blob();
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.style.display = 'none';
+                    a.href = url;
+
+                    // Получаем имя файла из заголовков
+                    const contentDisposition = response.headers.get('Content-Disposition');
+                    let filename = 'converted.pdf';
+                    if (contentDisposition) {
+                        const filenameMatch = contentDisposition.match(/filename="(.+)"/);
+                        if (filenameMatch) {
+                            filename = filenameMatch[1];
+                        }
+                    }
+
+                    a.download = filename;
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                    document.body.removeChild(a);
+
+                    // Показываем успех
+                    successMessage.textContent = '🎉 Файл успешно конвертирован и скачан!';
+                    successMessage.style.display = 'block';
+
+                } else {
+                    const errorText = await response.text();
+                    throw new Error(errorText || 'Ошибка конвертации');
+                }
+            } catch (error) {
+                errorMessage.textContent = `😱 Ошибка: ${error.message}`;
+                errorMessage.style.display = 'block';
+                console.error('Error:', error);
+            } finally {
+                // Сбрасываем состояние
+                loading.style.display = 'none';
+                convertBtn.disabled = false;
+                convertBtn.textContent = '🪄 Превратить в PDF!';
+
+                // Авто-сброс через 5 секунд
+                setTimeout(() => {
+                    resetMessages();
+                }, 5000);
+            }
+        });
+
+        // Ограничение размера файла (16MB как в бэкенде)
+        fileInput.addEventListener('change', function() {
+            if (this.files[0] && this.files[0].size > 16 * 1024 * 1024) {
+                errorMessage.textContent = '😱 Файл слишком большой! Максимум 16MB';
+                errorMessage.style.display = 'block';
+                this.value = '';
+                fileInfo.textContent = 'Файл не выбран... как так-то? 🤔';
+                fileInfo.style.color = 'var(--text-muted)';
+                convertBtn.disabled = true;
+            }
+        });
+    </script>
+</body>
+</html>
