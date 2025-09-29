@@ -5,7 +5,7 @@
 Разработано командой `"Виноделы 22 цеха"`
 
 <div align="center">
-  <img src="img/snr_logo.png" width=400px>
+  <img src="logo.png" width=400px>
 </div>
 
 <br>
