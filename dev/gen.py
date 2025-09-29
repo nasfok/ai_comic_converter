@@ -112,38 +112,39 @@ class DocumentAnalyzer:
             else:
                 return "neutral"
 
-    class Dalle3Generator:
-        """Генератор изображений через DALL-E 3"""
 
-        def __init__(self, api_key: str):
-            self.client = openai.OpenAI(api_key=api_key)
-            self.output_dir = Path("comic_output")
-            self.output_dir.mkdir(exist_ok=True)
+class Dalle3Generator:
+    """Генератор изображений через DALL-E 3"""
 
-        def generate_image(self, prompt: str, panel_id: int) -> Optional[Path]:
-            """Генерирует изображение через DALL-E 3"""
-            try:
-                response = self.client.images.generate(
-                    model="dall-e-3",
-                    prompt=prompt[:4000],
-                    size="1024x1024",
-                    quality="standard",
-                    n=1,
-                )
+    def __init__(self, api_key: str):
+        self.client = openai.OpenAI(api_key=api_key)
+        self.output_dir = Path("comic_output")
+        self.output_dir.mkdir(exist_ok=True)
 
-                image_url = response.data[0].url
-                image_response = requests.get(image_url)
+    def generate_image(self, prompt: str, panel_id: int) -> Optional[Path]:
+        """Генерирует изображение через DALL-E 3"""
+        try:
+            response = self.client.images.generate(
+                model="dall-e-3",
+                prompt=prompt[:4000],
+                size="1024x1024",
+                quality="standard",
+                n=1,
+            )
 
-                if image_response.status_code == 200:
-                    image_path = self.output_dir / f"panel_{panel_id:03d}.png"
-                    with open(image_path, 'wb') as f:
-                        f.write(image_response.content)
-                    return image_path
+            image_url = response.data[0].url
+            image_response = requests.get(image_url)
 
-            except Exception as e:
-                logger.error(f"DALL-E 3 generation failed: {e}")
+            if image_response.status_code == 200:
+                image_path = self.output_dir / f"panel_{panel_id:03d}.png"
+                with open(image_path, 'wb') as f:
+                    f.write(image_response.content)
+                return image_path
 
-            return None
+        except Exception as e:
+            logger.error(f"DALL-E 3 generation failed: {e}")
+
+        return None
 
 
 class PromptEngine:
