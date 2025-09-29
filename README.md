@@ -10,7 +10,7 @@
 
 <br>
 
-- Никита Кузнецов | [Telegram](https://t.me/sibirian_pioner) | [GitHub](https://github.com/nasfok)
-- Анна Апыхтина | [Telegram](https://t.me/droyti) | [GitHub](https://github.com/Ann-ap)
-- Дмитрий Буря | [Telegram](https://t.me/Bitmann0_0) | [GitHub](https://github.com/LostNepis)
+- Никита Кузнецов | [Telegram](https://t.me/datafuns) | [GitHub](https://github.com/nasfok)
+- Анна Апыхтина | [Telegram](https://t.me/anyaa_ap) | [GitHub](https://github.com/Ann-ap)
+- Дмитрий Буря | [Telegram](https://t.me/bvrya) | [GitHub](https://github.com/LostNepis)
 - Глеб Петров | [Telegram](https://t.me/Karnnaq) | [GitHub](https://github.com/KarnnaGQ)
